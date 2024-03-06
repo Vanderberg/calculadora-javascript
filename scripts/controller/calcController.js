@@ -167,14 +167,18 @@ class CalcController {
     pushOperation(value) {
         this._operation.push(value);
 
-        if (this._operation.length > 3) {
-
+        if (this._operation.length > 3)
             this.calc();
-        }
     }
 
     getResult() {
-        return eval(this._operation.join(""));
+        try {
+            return eval(this._operation.join(""));
+        } catch (e) {
+            setTimeout(() => {
+                this.setError();
+            }, 1);
+        }
     }
 
     calc() {
