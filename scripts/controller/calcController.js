@@ -2,8 +2,11 @@ class CalcController {
 
     constructor() {
 
+        this._audio = new Audio('click.mp3');
+        this._audioOnOff = false;
         this._lastOperator = '';
         this._lastNumber = '';
+
         this._operation = [];
         this._locale = "pt-BR";
         this._dyplaycalcEL = document.querySelector("#display");
@@ -20,7 +23,6 @@ class CalcController {
             let text = e.clipboardData.getData('Text');
 
             this.displayCalc = parseFloat(text);
-            console.log(text);
         });
     }
 
@@ -46,11 +48,33 @@ class CalcController {
 
         this.setLastNumberToDisplay();
         this.pasteFromClipboard();
+        this.addDobleClickBtnAc();
+    }
+
+    addDobleClickBtnAc() {
+        document.querySelectorAll('.btn-ac').forEach(btn => {
+
+            btn.addEventListener('dblclick', e => {
+                this.toogleAudio();
+            });
+        });
+    }
+
+    toogleAudio() {
+        this._audioOnOff = !this._audioOnOff;
+    }
+
+    playAudio() {
+        if (this._audioOnOff) {
+            this._audio.currentTime = 0;
+            this._audio.play();
+        }
     }
 
     initKeyboard() {
         document.addEventListener('keyup', e => {
-            console.log(e.key);
+
+            this.playAudio();
 
             switch (e.key) {
                 case 'Escape':
@@ -240,7 +264,7 @@ class CalcController {
             }
         }
 
-        console.log(this._operation);
+        //console.log(this._operation);
     }
 
     setError() {
@@ -252,10 +276,8 @@ class CalcController {
 
         let lastOperation = this.getlastOperation();
 
-        if (typeof lastOperation === 'string' && lastOperation.split('').indexOf('.') > -1) {
-            console.log(lastOperation)
+        if (typeof lastOperation === 'string' && lastOperation.split('').indexOf('.') > -1)
             return;
-        }
 
         if (this.isOperator(lastOperation) || !lastOperation) {
             this.pushOperation('0.');
@@ -267,6 +289,9 @@ class CalcController {
     }
 
     execBtn(value) {
+
+        this.playAudio();
+
         switch (value) {
             case 'ac':
                 this.clearAll();
