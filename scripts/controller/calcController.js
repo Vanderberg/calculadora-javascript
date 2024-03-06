@@ -384,8 +384,14 @@ class CalcController {
         return this._dyplaycalcEL.innerHTML;
     }
 
-    set displayCalc(valor) {
-        this._dyplaycalcEL.innerHTML = valor;
+    set displayCalc(value) {
+
+        if (value.toString().length > 10) {
+            this.setError();
+            return;
+        }
+
+        this._dyplaycalcEL.innerHTML = value;
     }
 
     get currentDate() {
